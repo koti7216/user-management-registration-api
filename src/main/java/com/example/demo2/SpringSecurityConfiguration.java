@@ -19,6 +19,7 @@ import java.util.Arrays;
 @EnableWebSecurity
 @Configuration
 public class SpringSecurityConfiguration {
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         return http.csrf().disable().authorizeRequests((authorize)-> authorize.antMatchers("/user/4th","/user/1st","/user/6th").permitAll().anyRequest().authenticated())
