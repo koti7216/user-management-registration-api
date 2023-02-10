@@ -3,10 +3,16 @@ package com.example.demo2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
+import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -18,23 +24,36 @@ import java.util.Arrays;
 
 @EnableWebSecurity
 @Configuration
-public class SpringSecurityConfiguration {
+public class SpringSecurityConfiguration  {
+
+    @Bean
+    BearerTokenResolver bearerTokenResolver() {
+        DefaultBearerTokenResolver bearerTokenResolver = new DefaultBearerTokenResolver();
+        bearerTokenResolver.setBearerTokenHeaderName(HttpHeaders.PROXY_AUTHORIZATION);
+        return bearerTokenResolver;
+    }
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        return http.csrf().disable().authorizeRequests((authorize)-> authorize.antMatchers("/user/4th","/user/1st","/user/6th").permitAll().anyRequest().authenticated())
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt).build();
+         http.csrf().disable().authorizeRequests((authorize)-> authorize.antMatchers("/user/4th","/user/1st","/user/6th").permitAll().anyRequest().authenticated())
+                .oauth2ResourceServer(outh2 -> outh2.bearerTokenResolver(this::tokenExtractor));
+         return http.build();
     }
-   /* p
-   ublic String tokenExtractor(HttpServletRequest request) {
-        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (header != null)
-            return header.replace("Bearer ", "");
+
+   /* @Override
+    protected void configure(HttpSecurity http) throws Exception{
+        http.csrf().disable().authorizeRequests().antMatchers("user/2nd").authenticated();
+        http.oauth2ResourceServer().jwt().and().bearerTokenResolver(this::tokenExtractor);
+    }*/
+
+    private String tokenExtractor(HttpServletRequest request) {
         Cookie cookie = WebUtils.getCookie(request, "token");
+        System.out.println(cookie);
         if (cookie != null)
             return cookie.getValue();
         return null;
-    }*/
+    }
+
  /* @Bean
    CorsConfigurationSource corsConfigurationSource() {
 

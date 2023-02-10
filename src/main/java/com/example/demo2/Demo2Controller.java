@@ -51,6 +51,7 @@ public class Demo2Controller {
     @PostMapping("/4th")
     public ResponseEntity<?> getbyname(@RequestBody SignUser user,HttpServletResponse response) throws OAuthSystemException, OAuthProblemException {
         OAuthClient client = new OAuthClient(new URLConnectionClient());
+
         OAuthClientRequest request =
                 OAuthClientRequest.tokenLocation("https://dev-27375836.okta.com/oauth2/default/v1/token")
                         .setGrantType(GrantType.CLIENT_CREDENTIALS)
