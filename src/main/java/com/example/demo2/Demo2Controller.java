@@ -13,28 +13,25 @@ import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true",allowedHeaders = "*")
 @RestController
 @RequestMapping("/user")
 public class Demo2Controller {
 
+
     @Autowired
     UserService serv;
+
+
     @PostMapping("/1st")
     public void signup(@RequestBody User user){
         serv.postUser(user);
@@ -46,7 +43,8 @@ public class Demo2Controller {
     }
     @GetMapping("/3rd/{id}")
     public User getbyid(@PathVariable Long id){
-        return serv.getUserById(id);
+
+            return (serv.getUserById(id));
     }
     @PostMapping("/4th")
     public ResponseEntity<?> getbyname(@RequestBody SignUser user,HttpServletResponse response) throws OAuthSystemException, OAuthProblemException {
@@ -63,6 +61,8 @@ public class Demo2Controller {
                 OAuth.HttpMethod.POST,
                 OAuthJSONAccessTokenResponse.class).getAccessToken();
          Cookie cookie=new Cookie("token",token);
+        System.out.println("controller");
+        System.out.println(cookie.getValue());
         if(serv.getByName(user).size()==0)
 
             return new ResponseEntity<>(null,HttpStatus.OK);
