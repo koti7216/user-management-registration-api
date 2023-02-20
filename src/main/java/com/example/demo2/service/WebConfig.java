@@ -44,7 +44,6 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
         webSecurity.ignoring().antMatchers("/user/4th","/user/1st");}
 
     public String tokenExtractor(HttpServletRequest request) {
-        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         Cookie cookie = WebUtils.getCookie(request, "token");
         if (cookie != null){
             System.out.println(cookie.getValue());
