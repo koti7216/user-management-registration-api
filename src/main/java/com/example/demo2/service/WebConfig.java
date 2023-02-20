@@ -33,7 +33,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-                .antMatchers("/user/4th").permitAll()
+                .antMatchers("/user/4th","/user/1st").permitAll()
                 .anyRequest().authenticated()
                 .and()
             .oauth2ResourceServer()
@@ -41,7 +41,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     public void configure(WebSecurity webSecurity) throws Exception {
-        webSecurity.ignoring().antMatchers("/user/4th");}
+        webSecurity.ignoring().antMatchers("/user/4th","/user/1st");}
 
     public String tokenExtractor(HttpServletRequest request) {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
