@@ -16,10 +16,16 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000",allowCredentials = "true",allowedHeaders = "*")
@@ -32,7 +38,7 @@ public class Demo2Controller {
     UserService serv;
 
 
-    @PostMapping("/1st")
+    @PostMapping("/1st/sign")
     public void signup(@RequestBody User user){
         serv.postUser(user);
     }
@@ -82,5 +88,15 @@ public class Demo2Controller {
     @DeleteMapping("/5th/{id}")
     public void delete(@PathVariable Long id){
         serv.delete(id);
+    }
+    @PostMapping("/1st/log")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        // Invalidate the user's session
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null){
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        // Redirect the user to the login page
+        return "/";
     }
 }
